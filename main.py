@@ -6,7 +6,7 @@ import time
 import argparse
 
 
-def generate_random_alias(length=6):
+def generate_random_alias(length=7):
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=length))
 
 
@@ -20,7 +20,7 @@ def generate_short_url(url, api_token=None, tinyurl_domain="tiny.one"):
         payload = json.dumps({
             "url": str(url),
             "domain": str(tinyurl_domain),
-            "alias": "dhp-" + str(generate_random_alias())
+            "alias": str(generate_random_alias())
         })
         conn.request("POST", "/create", payload, headers)
         res = conn.getresponse()
@@ -38,11 +38,11 @@ def main():
     parser.add_argument("-u", "-url", help="Place a correct URL between a pair of quotation marks")
     args = parser.parse_args()
 
-    # Case 1: short one URL only
+    # Case 1: shorten one URL only
     if args.u is not None:
         print(generate_short_url(url=args.u, api_token=api_token, tinyurl_domain=tinyurl_domain))
     else:
-        # Case 2: short a list of urls
+        # Case 2: shorten a list of urls
         # Step 2.1: reading a list of long urls from text file
         file = open('urls.txt', 'r', encoding='latin1').readlines()
         urls = []
@@ -52,12 +52,12 @@ def main():
         # Step 2.2: create short URLs
         f = open('short_urls.txt', 'w', encoding='utf-8')
 
-        print("Shorting URLs ...\n")
+        print("Shortening URLs\n...\n")
         for url in urls:
             short_url = generate_short_url(url=url, api_token=api_token, tinyurl_domain=tinyurl_domain)
             f.write(short_url + '\t' + url + '\n')
             time.sleep(.5)
-        print("... Done\n")
+        print("Done\n")
         f.close()
 
 
